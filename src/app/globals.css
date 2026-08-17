@@ -1,26 +1,74 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Neutres */
+  --color-background: #FAF7F2;
+  --color-surface: #FFFFFF;
+  --color-border: #E4DDD1;
+  --color-foreground: #2B2420;
+  --color-foreground-muted: #6B6055;
+
+  /* Marque - Baobab */
+  --color-bark-900: #2A1D14;
+  --color-bark-700: #3D2B1F;
+  --color-bark-500: #5C4432;
+  --color-bark-100: #EDE4D9;
+
+  --color-terracotta-700: #9A5218;
+  --color-terracotta-500: #B5651D;
+  --color-terracotta-100: #F5E2CE;
+
+  --color-foliage-700: #2F5230;
+  --color-foliage-500: #3F6B3F;
+  --color-foliage-100: #E1EBDD;
+
+  /* Semantique */
+  --color-success: #3F6B3F;
+  --color-success-bg: #E1EBDD;
+  --color-warning: #B5651D;
+  --color-warning-bg: #F5E2CE;
+  --color-danger: #A3342A;
+  --color-danger-bg: #F6E1DE;
+  --color-info: #3D5A73;
+  --color-info-bg: #E2EAF0;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-border: var(--color-border);
+  --color-foreground: var(--color-foreground);
+  --color-foreground-muted: var(--color-foreground-muted);
+
+  --color-bark-900: var(--color-bark-900);
+  --color-bark-700: var(--color-bark-700);
+  --color-bark-500: var(--color-bark-500);
+  --color-bark-100: var(--color-bark-100);
+
+  --color-terracotta-700: var(--color-terracotta-700);
+  --color-terracotta-500: var(--color-terracotta-500);
+  --color-terracotta-100: var(--color-terracotta-100);
+
+  --color-foliage-700: var(--color-foliage-700);
+  --color-foliage-500: var(--color-foliage-500);
+  --color-foliage-100: var(--color-foliage-100);
+
+  --color-success: var(--color-success);
+  --color-success-bg: var(--color-success-bg);
+  --color-warning: var(--color-warning);
+  --color-warning-bg: var(--color-warning-bg);
+  --color-danger: var(--color-danger);
+  --color-danger-bg: var(--color-danger-bg);
+  --color-info: var(--color-info);
+  --color-info-bg: var(--color-info-bg);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-display);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
