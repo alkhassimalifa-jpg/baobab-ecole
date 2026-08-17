@@ -11,9 +11,11 @@ datasource db {
 // ============================================================
 
 enum UserRole {
-  SUPER_ADMIN // Equipe BAOBAB, hors ecole (schoolId = null)
+  SUPER_ADMIN
+  PROMOTER
   DIRECTOR
   DEPUTY_DIRECTOR
+  PEDAGOGICAL_HEAD
   SECRETARY
   ACCOUNTANT
   SURVEILLANT
@@ -34,6 +36,44 @@ enum PeriodType {
   TRIMESTER
   SEMESTER
   CUSTOM
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  PROMOTED
+  REPEATING
+  TRANSFERRED
+  WITHDRAWN
+}
+
+enum GuardianRelation {
+  FATHER
+  MOTHER
+  LEGAL_GUARDIAN
+  OTHER
+}
+
+enum GradeType {
+  HOMEWORK
+  QUIZ
+  TEST
+  EXAM
+  ORAL
+  PROJECT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED_ABSENCE
+}
+
+enum PaymentMode {
+  CASH
+  MOBILE_MONEY
+  CHECK
+  BANK_TRANSFER
 }
 
 // ============================================================
@@ -69,6 +109,10 @@ model School {
   users         User[]
   academicYears AcademicYear[]
   auditLogs     AuditLog[]
+  classes       Class[]
+  subjects      Subject[]
+  students      Student[]
+  feeTypes      FeeType[]
 
   @@map("schools")
 }
@@ -88,6 +132,10 @@ model User {
   mfaEnabled Boolean @default(false)
   mfaSecret  String?
 
+  firstName String?
+  lastName  String?
+  phone     String?
+
   lastLoginAt DateTime?
 
   schoolId String?
@@ -96,7 +144,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  auditLogs AuditLog[]
+  auditLogs         AuditLog[]
+  taughtClasses     Class[]      @relation("MainTeacher")
+  guardianOf        Guardian[]
+  gradesRecorded    Grade[]      @relation("GradeRecordedBy")
+  attendanceRecords Attendance[] @relation("AttendanceRecordedBy")
+  paymentsRecorded  Payment[]    @relation("PaymentRecordedBy")
 
   @@index([schoolId])
   @@map("users")
@@ -121,9 +174,236 @@ model AcademicYear {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  classes     Class[]
+  enrollments Enrollment[]
+  feeTypes    FeeType[]
+
   @@unique([schoolId, label])
   @@index([schoolId])
   @@map("academic_years")
+}
+
+// ============================================================
+// CLASSES ET MATIERES
+// ============================================================
+
+model Class {
+  id       String  @id @default(cuid())
+  name     String // ex: "3eme B"
+  level    String // ex: "3eme" - texte libre, personnalisable par ecole
+  room     String?
+  capacity Int?
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  academicYearId String
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+
+  mainTeacherId String?
+  mainTeacher   User?   @relation("MainTeacher", fields: [mainTeacherId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  enrollments Enrollment[]
+
+  @@index([schoolId])
+  @@index([academicYearId])
+  @@map("classes")
+}
+
+model Subject {
+  id   String @id @default(cuid())
+  name String // ex: "Mathematiques"
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  grades Grade[]
+
+  @@unique([schoolId, name])
+  @@index([schoolId])
+  @@map("subjects")
+}
+
+// ============================================================
+// ELEVES
+// ============================================================
+
+model Student {
+  id        String @id @default(cuid())
+  matricule String @unique // ex: BAOBAB-2026-000145
+
+  firstName   String
+  lastName    String
+  birthDate   DateTime?
+  birthPlace  String?
+  gender      String?
+  nationality String?
+  photoUrl    String?
+  address     String?
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  guardians   Guardian[]
+  enrollments Enrollment[]
+
+  @@index([schoolId])
+  @@map("students")
+}
+
+// Lien Eleve <-> Parent (plusieurs enfants par parent, plusieurs responsables par eleve)
+model Guardian {
+  id               String           @id @default(cuid())
+  relation         GuardianRelation
+  isPrimaryContact Boolean          @default(false)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, userId])
+  @@index([studentId])
+  @@index([userId])
+  @@map("guardians")
+}
+
+// ============================================================
+// INSCRIPTION ANNUELLE (coeur de l'historique par annee)
+// ============================================================
+
+model Enrollment {
+  id     String           @id @default(cuid())
+  status EnrollmentStatus @default(ACTIVE)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  classId String
+  class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  academicYearId String
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  grades      Grade[]
+  attendances Attendance[]
+  payments    Payment[]
+
+  @@unique([studentId, academicYearId])
+  @@index([classId])
+  @@index([academicYearId])
+  @@map("enrollments")
+}
+
+// ============================================================
+// NOTES
+// ============================================================
+
+model Grade {
+  id          String    @id @default(cuid())
+  type        GradeType
+  value       Float
+  maxValue    Float     @default(20)
+  coefficient Float     @default(1)
+  date        DateTime
+  isPublished Boolean   @default(false)
+
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  recordedById String?
+  recordedBy   User?   @relation("GradeRecordedBy", fields: [recordedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([enrollmentId])
+  @@index([subjectId])
+  @@map("grades")
+}
+
+// ============================================================
+// PRESENCES
+// ============================================================
+
+model Attendance {
+  id     String           @id @default(cuid())
+  status AttendanceStatus
+  date   DateTime
+
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  recordedById String?
+  recordedBy   User?   @relation("AttendanceRecordedBy", fields: [recordedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([enrollmentId])
+  @@map("attendances")
+}
+
+// ============================================================
+// FINANCE - GRILLE TARIFAIRE ET PAIEMENTS (manuel uniquement)
+// ============================================================
+
+model FeeType {
+  id     String @id @default(cuid())
+  name   String // ex: "Frais de scolarite - Trimestre 1"
+  amount Float
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  academicYearId String
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  payments Payment[]
+
+  @@index([schoolId])
+  @@index([academicYearId])
+  @@map("fee_types")
+}
+
+model Payment {
+  id            String      @id @default(cuid())
+  receiptNumber String      @unique // ex: BAOBAB-000152
+  amount        Float
+  mode          PaymentMode
+  paidAt        DateTime    @default(now())
+
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  feeTypeId String
+  feeType   FeeType @relation(fields: [feeTypeId], references: [id], onDelete: Restrict)
+
+  recordedById String?
+  recordedBy   User?   @relation("PaymentRecordedBy", fields: [recordedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([enrollmentId])
+  @@index([feeTypeId])
+  @@map("payments")
 }
 
 // ============================================================
