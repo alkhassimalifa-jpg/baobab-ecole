@@ -14,7 +14,7 @@ export default async function AppLayout({
     redirect("/connexion");
   }
 
-  let schoolName = "BAOBAB ECOLE — Super Admin";
+  let schoolName = "BAOBAB ECOLE - Super Admin";
 
   if (session.user.schoolId) {
     const school = await prisma.school.findUnique({
@@ -30,7 +30,7 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <AppNav schoolName={schoolName} userLabel={userLabel} />
+      <AppNav schoolName={schoolName} userLabel={userLabel} role={session.user.role} />
       <main className="flex-1">{children}</main>
     </div>
   );

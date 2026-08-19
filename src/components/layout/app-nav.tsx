@@ -3,25 +3,17 @@
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { BaobabMark } from "@/components/brand/baobab-mark";
-
-const NAV_ITEMS = [
-  { href: "/", label: "Accueil" },
-  { href: "/profil", label: "Mon profil" },
-  { href: "/emploi-du-temps", label: "Emploi du temps" },
-  { href: "/notes", label: "Notes & evaluations" },
-  { href: "/bulletin", label: "Bulletin / Releve" },
-  { href: "/absences", label: "Absences / retards" },
-  { href: "/frais-payes", label: "Frais payes" },
-  { href: "/frais-impayes", label: "Frais impayes" },
-];
+import { getNavItemsForRole } from "@/lib/navigation";
 
 type AppNavProps = {
   schoolName: string;
   userLabel: string;
+  role: string;
 };
 
-export function AppNav({ schoolName, userLabel }: AppNavProps) {
+export function AppNav({ schoolName, userLabel, role }: AppNavProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const navItems = getNavItemsForRole(role);
 
   return (
     <>
@@ -54,7 +46,7 @@ export function AppNav({ schoolName, userLabel }: AppNavProps) {
 
       {isOpen ? (
         <nav className="bg-bark-900 text-white">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <a key={item.href}
               href={item.href}
               className="block px-5 py-3.5 text-sm border-b border-white/10 hover:bg-white/5"
