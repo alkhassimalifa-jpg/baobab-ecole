@@ -214,6 +214,22 @@ async function main() {
     },
   });
 
+  await prisma.teachingAssignment.upsert({
+    where: {
+      teacherId_classId_subjectId: {
+        teacherId: teacher.id,
+        classId: classe.id,
+        subjectId: maths.id,
+      },
+    },
+    update: {},
+    create: {
+      teacherId: teacher.id,
+      classId: classe.id,
+      subjectId: maths.id,
+    },
+  });
+
   console.log("Seed termine avec succes.");
   console.log("Comptes de test (mot de passe pour tous : ChangeMoi123!) :");
   console.log("- Super Admin : admin@baobab-ecole.td");
