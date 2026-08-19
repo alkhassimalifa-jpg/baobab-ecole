@@ -25,7 +25,14 @@ export function getNavItemsForRole(role: string): NavItem[] {
   }
 
   if (role === "TEACHER") {
-    items.push({ href: "/notes/saisie", label: "Saisie de notes" });
+    items.push(
+      { href: "/emploi-du-temps", label: "Emploi du temps" },
+      { href: "/notes/saisie", label: "Saisie de notes" }
+    );
+  }
+
+  if (role === "PARENT") {
+    items.push({ href: "/emploi-du-temps", label: "Emploi du temps" });
   }
 
   if (role === "SUPER_ADMIN") {
