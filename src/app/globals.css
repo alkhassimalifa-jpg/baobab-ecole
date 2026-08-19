@@ -1,23 +1,25 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 :root {
-  /* Neutres */
-  --color-background: #FAF7F2;
+  /* Neutres - gris clair, plus neutre que le creme precedent */
+  --color-background: #F5F7F8;
   --color-surface: #FFFFFF;
-  --color-border: #E4DDD1;
-  --color-foreground: #2B2420;
-  --color-foreground-muted: #6B6055;
+  --color-border: #E1E5E8;
+  --color-foreground: #23282C;
+  --color-foreground-muted: #5C6670;
 
-  /* Marque - Baobab */
-  --color-bark-900: #2A1D14;
-  --color-bark-700: #3D2B1F;
-  --color-bark-500: #5C4432;
-  --color-bark-100: #EDE4D9;
+  /* Marque - Teal (couleur principale) */
+  --color-bark-900: #0B3D44;
+  --color-bark-700: #146672;
+  --color-bark-500: #1F8592;
+  --color-bark-100: #DCEEF0;
 
+  /* Accent - Terracotta (identite baobab) */
   --color-terracotta-700: #9A5218;
   --color-terracotta-500: #B5651D;
   --color-terracotta-100: #F5E2CE;
 
+  /* Validation - Vert feuillage */
   --color-foliage-700: #2F5230;
   --color-foliage-500: #3F6B3F;
   --color-foliage-100: #E1EBDD;
@@ -29,8 +31,8 @@
   --color-warning-bg: #F5E2CE;
   --color-danger: #A3342A;
   --color-danger-bg: #F6E1DE;
-  --color-info: #3D5A73;
-  --color-info-bg: #E2EAF0;
+  --color-info: #146672;
+  --color-info-bg: #DCEEF0;
 }
 
 @theme inline {
