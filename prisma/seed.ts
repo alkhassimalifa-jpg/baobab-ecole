@@ -230,6 +230,17 @@ async function main() {
     },
   });
 
+
+  await prisma.scheduleSlot.createMany({
+    data: [
+      { classId: classe.id, subjectId: maths.id, teacherId: teacher.id, dayOfWeek: "MONDAY", startTime: "07:00", endTime: "08:00", room: "Salle 12" },
+      { classId: classe.id, subjectId: maths.id, teacherId: teacher.id, dayOfWeek: "MONDAY", startTime: "08:00", endTime: "09:00", room: "Salle 12" },
+      { classId: classe.id, subjectId: francais.id, dayOfWeek: "TUESDAY", startTime: "08:00", endTime: "09:00", room: "Salle 12" },
+      { classId: classe.id, subjectId: maths.id, teacherId: teacher.id, dayOfWeek: "WEDNESDAY", startTime: "07:00", endTime: "08:00", room: "Salle 12" },
+      { classId: classe.id, subjectId: francais.id, dayOfWeek: "THURSDAY", startTime: "09:00", endTime: "10:00", room: "Salle 12" },
+    ],
+    skipDuplicates: true,
+  });
   console.log("Seed termine avec succes.");
   console.log("Comptes de test (mot de passe pour tous : ChangeMoi123!) :");
   console.log("- Super Admin : admin@baobab-ecole.td");

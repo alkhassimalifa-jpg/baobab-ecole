@@ -151,6 +151,7 @@ model User {
   attendanceRecords   Attendance[]         @relation("AttendanceRecordedBy")
   paymentsRecorded    Payment[]            @relation("PaymentRecordedBy")
   teachingAssignments TeachingAssignment[] @relation("TeacherAssignments")
+  scheduleSlots       ScheduleSlot[]       @relation("ScheduleTeacher")
 
   @@index([schoolId])
   @@map("users")
@@ -209,6 +210,7 @@ model Class {
 
   enrollments         Enrollment[]
   teachingAssignments TeachingAssignment[]
+  scheduleSlots       ScheduleSlot[]
 
   @@index([schoolId])
   @@index([academicYearId])
@@ -226,6 +228,7 @@ model Subject {
 
   grades              Grade[]
   teachingAssignments TeachingAssignment[]
+  scheduleSlots       ScheduleSlot[]
 
   @@unique([schoolId, name])
   @@index([schoolId])
@@ -458,4 +461,37 @@ model TeachingAssignment {
   @@index([teacherId])
   @@index([classId])
   @@map("teaching_assignments")
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+model ScheduleSlot {
+  id String @id @default(cuid())
+
+  dayOfWeek DayOfWeek
+  startTime String // format "HH:mm", ex: "08:00"
+  endTime   String // format "HH:mm", ex: "09:00"
+  room      String?
+
+  classId String
+  class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  teacherId String?
+  teacher   User?   @relation("ScheduleTeacher", fields: [teacherId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([classId])
+  @@index([teacherId])
+  @@map("schedule_slots")
 }
