@@ -12,6 +12,7 @@ export function getNavItemsForRole(role: string): NavItem[] {
     items.push(
       { href: "/eleves", label: "Eleves" },
       { href: "/eleves/nouveau", label: "Inscrire un eleve" },
+      { href: "/structure", label: "Classes et matieres" },
       { href: "/enseignants", label: "Enseignants" },
       { href: "/enseignants/nouveau", label: "Ajouter un enseignant" },
       { href: "/parametres/bulletin", label: "Parametres bulletin" }
