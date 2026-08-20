@@ -52,7 +52,7 @@ export default async function AccueilPage() {
         <div className="flex gap-2 mb-6">
           <StatCard
             label="Moyenne generale"
-            value={data.averageOn20 !== null ? data.averageOn20.toFixed(1) : "—"}
+            value={data.averageOn20 !== null ? data.averageOn20.toFixed(1) : "-"}
           />
           <StatCard label="Total encaisse" value={formatAmount(data.totalCollected)} />
         </div>
@@ -66,8 +66,8 @@ export default async function AccueilPage() {
           {data.recentPayments.map((payment) => (
             <WidgetRow
               key={payment.id}
-              title={`${payment.studentName} — ${payment.feeTypeName}`}
-              meta={`Recu ${payment.receiptNumber} — ${formatDate(payment.paidAt)}`}
+              title={`${payment.studentName} - ${payment.feeTypeName}`}
+              meta={`Recu ${payment.receiptNumber} - ${formatDate(payment.paidAt)}`}
               badge={<Pill tone="good">{formatAmount(payment.amount)}</Pill>}
             />
           ))}
@@ -82,7 +82,7 @@ export default async function AccueilPage() {
           {data.recentAbsences.map((absence) => (
             <WidgetRow
               key={absence.id}
-              title={`${absence.studentName} — ${absence.className}`}
+              title={`${absence.studentName} - ${absence.className}`}
               meta={formatDate(absence.date)}
               badge={<Pill tone="bad">{absence.status === "ABSENT" ? "Absence" : "Retard"}</Pill>}
             />
@@ -125,11 +125,17 @@ export default async function AccueilPage() {
       {children.map((child) => (
         <div key={child.studentId} className="mb-8">
           <p className="text-xs font-bold uppercase tracking-wide text-bark-700 mb-1">
-            {child.className} — {child.academicYearLabel}
+            {child.className} - {child.academicYearLabel}
           </p>
-          <h1 className="text-xl font-semibold text-foreground mb-4">
+          <h1 className="text-xl font-semibold text-foreground mb-2">
             {child.firstName} {child.lastName}
           </h1>
+          
+          <a href={`/bulletin/${child.studentId}`}
+            className="inline-block text-xs font-bold text-terracotta-700 mb-4"
+          >
+            Telecharger le bulletin (PDF)
+          </a>
 
           <Widget
             title="Dernieres notes obtenues"
@@ -164,7 +170,7 @@ export default async function AccueilPage() {
               <WidgetRow
                 key={payment.id}
                 title={payment.feeTypeName}
-                meta={`Recu ${payment.receiptNumber} — Solde le ${formatDate(payment.paidAt)}`}
+                meta={`Recu ${payment.receiptNumber} - Solde le ${formatDate(payment.paidAt)}`}
                 badge={<Pill tone="good">{formatAmount(payment.amount)}</Pill>}
               />
             ))}

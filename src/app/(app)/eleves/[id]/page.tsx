@@ -6,7 +6,7 @@ import { Widget, WidgetRow, Pill } from "@/components/dashboard/widget";
 const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR", "PEDAGOGICAL_HEAD", "SECRETARY"];
 
 function formatDate(date: Date | null) {
-  if (!date) return "—";
+  if (!date) return "â€”";
   return new Intl.DateTimeFormat("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }).format(date);
 }
 
@@ -60,9 +60,15 @@ export default async function EleveDetailPage({
       <h1 className="text-center font-display text-lg font-semibold text-bark-700 mb-2">
         {student.firstName} {student.lastName}
       </h1>
+      <div className="text-center mb-4">
+        <a href={`/bulletin/${student.id}`} className="text-xs font-bold text-terracotta-700">
+          Voir le bulletin (PDF) -&gt;
+        </a>
+      </div>
+
       {student.className ? (
         <p className="text-center mb-5">
-          <Pill tone="neutral">{student.className} — {student.academicYearLabel}</Pill>
+          <Pill tone="neutral">{student.className} â€” {student.academicYearLabel}</Pill>
         </p>
       ) : null}
 
@@ -70,16 +76,16 @@ export default async function EleveDetailPage({
         <div className="flex gap-3 py-2.5 text-sm">
           <span className="w-24 flex-shrink-0 text-foreground-muted">Naissance</span>
           <span className="font-semibold text-foreground">
-            {formatDate(student.birthDate)}{student.birthPlace ? ` — ${student.birthPlace}` : ""}
+            {formatDate(student.birthDate)}{student.birthPlace ? ` â€” ${student.birthPlace}` : ""}
           </span>
         </div>
         <div className="flex gap-3 py-2.5 text-sm">
           <span className="w-24 flex-shrink-0 text-foreground-muted">Nationalite</span>
-          <span className="font-semibold text-foreground">{student.nationality ?? "—"}</span>
+          <span className="font-semibold text-foreground">{student.nationality ?? "â€”"}</span>
         </div>
         <div className="flex gap-3 py-2.5 text-sm">
           <span className="w-24 flex-shrink-0 text-foreground-muted">Adresse</span>
-          <span className="font-semibold text-foreground">{student.address ?? "—"}</span>
+          <span className="font-semibold text-foreground">{student.address ?? "â€”"}</span>
         </div>
         {student.guardians.map((g) => (
           <div key={g.id} className="flex gap-3 py-2.5 text-sm">
@@ -87,7 +93,7 @@ export default async function EleveDetailPage({
               {RELATION_LABELS[g.relation] ?? "Responsable"}
             </span>
             <span className="font-semibold text-foreground">
-              {g.name}{g.phone ? ` — ${g.phone}` : ""}
+              {g.name}{g.phone ? ` â€” ${g.phone}` : ""}
             </span>
           </div>
         ))}
@@ -100,7 +106,7 @@ export default async function EleveDetailPage({
             <WidgetRow
               key={grade.id}
               title={grade.subjectName}
-              meta={`${formatDate(grade.date)} — Coefficient ${grade.coefficient}`}
+              meta={`${formatDate(grade.date)} â€” Coefficient ${grade.coefficient}`}
               badge={
                 <Pill tone={isGood ? "good" : "bad"}>
                   {grade.value} / {grade.maxValue}
@@ -116,7 +122,7 @@ export default async function EleveDetailPage({
           <WidgetRow
             key={payment.id}
             title={payment.feeTypeName}
-            meta={`Recu ${payment.receiptNumber} — ${formatDate(payment.paidAt)}`}
+            meta={`Recu ${payment.receiptNumber} â€” ${formatDate(payment.paidAt)}`}
             badge={<Pill tone="good">{formatAmount(payment.amount)}</Pill>}
           />
         ))}

@@ -13,7 +13,8 @@ export function getNavItemsForRole(role: string): NavItem[] {
       { href: "/eleves", label: "Eleves" },
       { href: "/eleves/nouveau", label: "Inscrire un eleve" },
       { href: "/enseignants", label: "Enseignants" },
-      { href: "/enseignants/nouveau", label: "Ajouter un enseignant" }
+      { href: "/enseignants/nouveau", label: "Ajouter un enseignant" },
+      { href: "/parametres/bulletin", label: "Parametres bulletin" }
     );
   }
 
@@ -36,7 +37,10 @@ export function getNavItemsForRole(role: string): NavItem[] {
   }
 
   if (role === "SUPER_ADMIN") {
-    // Reserve pour la gestion des ecoles au niveau plateforme, a venir
+    items.push(
+      { href: "/ecoles", label: "Ecoles" },
+      { href: "/ecoles/nouvelle", label: "Ajouter une ecole" }
+    );
   }
 
   return items;
