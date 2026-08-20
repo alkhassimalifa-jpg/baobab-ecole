@@ -106,13 +106,14 @@ model School {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users         User[]
-  academicYears AcademicYear[]
-  auditLogs     AuditLog[]
-  classes       Class[]
-  subjects      Subject[]
-  students      Student[]
-  feeTypes      FeeType[]
+  users            User[]
+  academicYears    AcademicYear[]
+  auditLogs        AuditLog[]
+  classes          Class[]
+  subjects         Subject[]
+  students         Student[]
+  feeTypes         FeeType[]
+  bulletinSettings BulletinSettings?
 
   @@map("schools")
 }
@@ -494,4 +495,21 @@ model ScheduleSlot {
   @@index([classId])
   @@index([teacherId])
   @@map("schedule_slots")
+}
+
+model BulletinSettings {
+  id String @id @default(cuid())
+
+  showRank         Boolean @default(false)
+  showAppreciation Boolean @default(false)
+  showSignatures   Boolean @default(true)
+  footerText       String?
+
+  schoolId String @unique
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("bulletin_settings")
 }
