@@ -13,6 +13,7 @@ export function getNavItemsForRole(role: string): NavItem[] {
       { href: "/eleves", label: "Eleves" },
       { href: "/eleves/nouveau", label: "Inscrire un eleve" },
       { href: "/structure", label: "Classes et matieres" },
+      { href: "/presences", label: "Presences" },
       { href: "/enseignants", label: "Enseignants" },
       { href: "/enseignants/nouveau", label: "Ajouter un enseignant" },
       { href: "/comptabilite", label: "Comptabilite" },
@@ -31,12 +32,17 @@ export function getNavItemsForRole(role: string): NavItem[] {
   if (role === "TEACHER") {
     items.push(
       { href: "/emploi-du-temps", label: "Emploi du temps" },
-      { href: "/notes/saisie", label: "Saisie de notes" }
+      { href: "/notes/saisie", label: "Saisie de notes" },
+      { href: "/presences", label: "Presences" }
     );
   }
 
   if (role === "PARENT") {
     items.push({ href: "/emploi-du-temps", label: "Emploi du temps" });
+  }
+
+  if (role === "SURVEILLANT") {
+    items.push({ href: "/presences", label: "Presences" });
   }
 
   if (role === "ACCOUNTANT") {
