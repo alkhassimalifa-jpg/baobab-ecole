@@ -18,14 +18,15 @@ export async function getClassSchedule(classId: string) {
   }));
 }
 
-export async function getStudentClassId(userId: string) {
-  const guardian = await prisma.guardian.findFirst({
+export async function getParentChildrenClasses(userId: string) {
+  const guardians = await prisma.guardian.findMany({
     where: { userId },
     include: {
       student: {
         include: {
           enrollments: {
             where: { academicYear: { isCurrent: true } },
+            include: { class: true },
             take: 1,
           },
         },
@@ -33,7 +34,18 @@ export async function getStudentClassId(userId: string) {
     },
   });
 
-  return guardian?.student.enrollments[0]?.classId ?? null;
+  return guardians
+    .map((g) => {
+      const enrollment = g.student.enrollments[0];
+      if (!enrollment) return null;
+      return {
+        studentId: g.student.id,
+        studentName: `${g.student.firstName} ${g.student.lastName}`,
+        classId: enrollment.classId,
+        className: enrollment.class.name,
+      };
+    })
+    .filter((c): c is NonNullable<typeof c> => c !== null);
 }
 
 export async function getTeacherSchedule(teacherId: string) {

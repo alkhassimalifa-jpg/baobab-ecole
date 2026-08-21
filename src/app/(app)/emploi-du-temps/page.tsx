@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { getClassSchedule, getStudentClassId, getTeacherSchedule } from "@/lib/data/schedule";
+import { getClassSchedule, getParentChildrenClasses, getTeacherSchedule } from "@/lib/data/schedule";
 import { ScheduleGrid } from "@/components/schedule/schedule-grid";
 
 export default async function EmploiDuTempsPage() {
@@ -24,25 +24,36 @@ export default async function EmploiDuTempsPage() {
   }
 
   if (role === "PARENT") {
-    const classId = await getStudentClassId(session!.user.id);
-    if (!classId) {
+    const children = await getParentChildrenClasses(session!.user.id);
+
+    if (children.length === 0) {
       return (
         <div className="px-4 py-6">
-          <p className="text-sm text-foreground-muted">Aucune classe trouvee.</p>
+          <p className="text-sm text-foreground-muted">Aucun enfant rattache a ce compte.</p>
         </div>
       );
     }
-    const slots = await getClassSchedule(classId);
+
     return (
       <div className="px-4 py-6">
-        <p className="text-xs font-bold uppercase tracking-wide text-bark-700 mb-1">
-          Planning hebdomadaire
-        </p>
         <h1 className="text-xl font-semibold text-foreground mb-4">Emploi du temps</h1>
-        {slots.length === 0 ? (
-          <p className="text-sm text-foreground-muted">Aucun creneau planifie.</p>
-        ) : (
-          <ScheduleGrid slots={slots} />
+        {await Promise.all(
+          children.map(async (child) => {
+            const slots = await getClassSchedule(child.classId);
+            return (
+              <div key={child.studentId} className="mb-8">
+                <p className="text-xs font-bold uppercase tracking-wide text-bark-700 mb-1">
+                  {child.className}
+                </p>
+                <h2 className="text-base font-semibold text-foreground mb-3">{child.studentName}</h2>
+                {slots.length === 0 ? (
+                  <p className="text-sm text-foreground-muted">Aucun creneau planifie.</p>
+                ) : (
+                  <ScheduleGrid slots={slots} />
+                )}
+              </div>
+            );
+          })
         )}
       </div>
     );
