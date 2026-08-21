@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db/client";
 
-export async function getStudentsList(schoolId: string) {
+export async function getStudentsList(schoolId: string, search?: string) {
   const currentYear = await prisma.academicYear.findFirst({
     where: { schoolId, isCurrent: true },
   });
@@ -8,7 +8,21 @@ export async function getStudentsList(schoolId: string) {
   if (!currentYear) return [];
 
   const enrollments = await prisma.enrollment.findMany({
-    where: { academicYearId: currentYear.id, status: "ACTIVE" },
+    where: {
+      academicYearId: currentYear.id,
+      status: "ACTIVE",
+      ...(search
+        ? {
+            student: {
+              OR: [
+                { firstName: { contains: search, mode: "insensitive" } },
+                { lastName: { contains: search, mode: "insensitive" } },
+                { matricule: { contains: search, mode: "insensitive" } },
+              ],
+            },
+          }
+        : {}),
+    },
     include: {
       student: true,
       class: true,

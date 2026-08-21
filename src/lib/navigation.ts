@@ -15,6 +15,7 @@ export function getNavItemsForRole(role: string): NavItem[] {
       { href: "/structure", label: "Classes et matieres" },
       { href: "/enseignants", label: "Enseignants" },
       { href: "/enseignants/nouveau", label: "Ajouter un enseignant" },
+      { href: "/comptabilite", label: "Comptabilite" },
       { href: "/parametres/bulletin", label: "Parametres bulletin" }
     );
   }
@@ -22,7 +23,8 @@ export function getNavItemsForRole(role: string): NavItem[] {
   if (role === "SECRETARY") {
     items.push(
       { href: "/eleves", label: "Eleves" },
-      { href: "/eleves/nouveau", label: "Inscrire un eleve" }
+      { href: "/eleves/nouveau", label: "Inscrire un eleve" },
+      { href: "/comptabilite", label: "Comptabilite" }
     );
   }
 
@@ -35,6 +37,10 @@ export function getNavItemsForRole(role: string): NavItem[] {
 
   if (role === "PARENT") {
     items.push({ href: "/emploi-du-temps", label: "Emploi du temps" });
+  }
+
+  if (role === "ACCOUNTANT") {
+    items.push({ href: "/comptabilite", label: "Comptabilite" });
   }
 
   if (role === "SUPER_ADMIN") {
