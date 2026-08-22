@@ -136,6 +136,7 @@ model User {
   firstName String?
   lastName  String?
   phone     String?
+  jobTitle  String?
 
   lastLoginAt DateTime?
 
