@@ -20,6 +20,7 @@ export function getNavItemsForRole(role: string): NavItem[] {
       { href: "/enseignants", label: "Enseignants" },
       { href: "/enseignants/nouveau", label: "Ajouter un enseignant" },
       { href: "/comptabilite", label: "Comptabilite" },
+      { href: "/frais-impayes", label: "Frais impayes" },
       { href: "/parametres/bulletin", label: "Parametres bulletin" }
     );
   }
@@ -28,7 +29,8 @@ export function getNavItemsForRole(role: string): NavItem[] {
     items.push(
       { href: "/eleves", label: "Eleves" },
       { href: "/eleves/nouveau", label: "Inscrire un eleve" },
-      { href: "/comptabilite", label: "Comptabilite" }
+      { href: "/comptabilite", label: "Comptabilite" },
+      { href: "/frais-impayes", label: "Frais impayes" }
     );
   }
 
@@ -55,7 +57,10 @@ export function getNavItemsForRole(role: string): NavItem[] {
   }
 
   if (role === "ACCOUNTANT") {
-    items.push({ href: "/comptabilite", label: "Comptabilite" });
+    items.push(
+      { href: "/comptabilite", label: "Comptabilite" },
+      { href: "/frais-impayes", label: "Frais impayes" }
+    );
   }
 
   if (role === "SUPER_ADMIN") {
