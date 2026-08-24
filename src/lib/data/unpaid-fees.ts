@@ -19,7 +19,13 @@ export async function getUnpaidFeesForStudent(schoolId: string, studentId: strin
     where: { enrollmentId: enrollment.id },
   });
 
-  const details = feeTypes.map((fee) => {
+  const applicableFees = feeTypes.filter((fee) => {
+    if (fee.isMandatory) return true;
+    // Frais optionnel : ne s'applique que si l'eleve a deja verse au moins un paiement dessus
+    return payments.some((p) => p.feeTypeId === fee.id);
+  });
+
+  const details = applicableFees.map((fee) => {
     const paidForThisFee = payments
       .filter((p) => p.feeTypeId === fee.id)
       .reduce((sum, p) => sum + p.amount, 0);
@@ -53,13 +59,20 @@ export async function getSchoolUnpaidSummary(schoolId: string) {
   const feeTypes = await prisma.feeType.findMany({
     where: { schoolId, academicYearId: currentYear.id },
   });
-  const totalDuePerStudent = feeTypes.reduce((sum, f) => sum + f.amount, 0);
 
   const results = await Promise.all(
     enrollments.map(async (e) => {
       const payments = await prisma.payment.findMany({ where: { enrollmentId: e.id } });
+
+      const applicableFees = feeTypes.filter((fee) => {
+        if (fee.isMandatory) return true;
+        return payments.some((p) => p.feeTypeId === fee.id);
+      });
+
+      const totalDue = applicableFees.reduce((sum, f) => sum + f.amount, 0);
       const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
-      const remaining = Math.max(0, totalDuePerStudent - totalPaid);
+      const remaining = Math.max(0, totalDue - totalPaid);
+
       return {
         studentId: e.student.id,
         studentName: `${e.student.firstName} ${e.student.lastName}`,

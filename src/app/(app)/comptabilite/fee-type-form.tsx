@@ -13,6 +13,12 @@ export function FeeTypeForm() {
     <form action={formAction} className="grid grid-cols-2 gap-2">
       <Input name="name" placeholder="Ex: Scolarite Trimestre 1" required />
       <Input name="amount" type="number" placeholder="Montant" required />
+
+      <label className="col-span-2 flex items-center gap-2 text-sm text-foreground">
+        <input type="checkbox" name="isMandatory" defaultChecked className="w-4 h-4" />
+        Obligatoire pour tous les eleves (decochez pour un frais optionnel comme le transport ou la cantine)
+      </label>
+
       <div className="col-span-2">
         <button
           type="submit"

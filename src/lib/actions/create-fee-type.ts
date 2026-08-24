@@ -9,6 +9,7 @@ const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR", "ACCOUNTANT"];
 const schema = z.object({
   name: z.string().min(2, "Nom trop court"),
   amount: z.coerce.number().positive("Montant invalide"),
+  isMandatory: z.coerce.boolean(),
 });
 
 export type CreateFeeTypeState = {
@@ -31,6 +32,7 @@ export async function createFeeTypeAction(
   const parsed = schema.safeParse({
     name: formData.get("name"),
     amount: formData.get("amount"),
+    isMandatory: formData.get("isMandatory") === "on",
   });
 
   if (!parsed.success) {
@@ -51,6 +53,7 @@ export async function createFeeTypeAction(
       academicYearId: currentYear.id,
       name: parsed.data.name,
       amount: parsed.data.amount,
+      isMandatory: parsed.data.isMandatory,
     },
   });
 
