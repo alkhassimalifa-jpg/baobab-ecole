@@ -372,9 +372,10 @@ model Attendance {
 // ============================================================
 
 model FeeType {
-  id     String @id @default(cuid())
-  name   String // ex: "Frais de scolarite - Trimestre 1"
-  amount Float
+  id          String  @id @default(cuid())
+  name        String // ex: "Frais de scolarite - Trimestre 1"
+  amount      Float
+  isMandatory Boolean @default(true)
 
   schoolId String
   school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
