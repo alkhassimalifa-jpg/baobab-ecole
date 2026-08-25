@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { getParentDashboardData } from "@/lib/data/parent-dashboard";
 import { getDirectorDashboardData } from "@/lib/data/director-dashboard";
+import { getStudentOwnData } from "@/lib/data/student-dashboard";
 import { Widget, WidgetRow, Pill } from "@/components/dashboard/widget";
 import { StatCard } from "@/components/dashboard/stat-card";
 
@@ -15,6 +16,84 @@ function formatAmount(amount: number) {
 export default async function AccueilPage() {
   const session = await auth();
   const role = session?.user.role;
+
+  if (role === "STUDENT") {
+    const loginId = session!.user.email?.startsWith("eleve-")
+      ? null
+      : null;
+
+    // On recupere le loginId (matricule) depuis la base, car la session ne le contient pas directement
+    const { prisma } = await import("@/lib/db/client");
+    const currentUser = await prisma.user.findUnique({ where: { id: session!.user.id } });
+
+    if (!currentUser?.loginId) {
+      return (
+        <div className="px-4 py-6">
+          <p className="text-sm text-foreground-muted">Compte eleve introuvable.</p>
+        </div>
+      );
+    }
+
+    const data = await getStudentOwnData(currentUser.loginId);
+
+    if (!data) {
+      return (
+        <div className="px-4 py-6">
+          <p className="text-sm text-foreground-muted">Aucune inscription active trouvee.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="px-4 py-6">
+        <p className="text-xs font-bold uppercase tracking-wide text-bark-700 mb-1">
+          {data.className} - {data.academicYearLabel}
+        </p>
+        <h1 className="text-xl font-semibold text-foreground mb-4">
+          Bonjour {data.firstName}
+        </h1>
+
+        <Widget
+          title="Dernieres notes obtenues"
+          variant="notes"
+          footerHref="/notes"
+          isEmpty={data.grades.length === 0}
+        >
+          {data.grades.map((grade) => {
+            const isGood = grade.value / grade.maxValue >= 0.5;
+            return (
+              <WidgetRow
+                key={grade.id}
+                title={grade.subjectName}
+                meta={formatDate(grade.date)}
+                badge={
+                  <Pill tone={isGood ? "good" : "bad"}>
+                    {grade.value} / {grade.maxValue}
+                  </Pill>
+                }
+              />
+            );
+          })}
+        </Widget>
+
+        <Widget
+          title="Absences / retards"
+          variant="absences"
+          footerHref="/absences"
+          isEmpty={data.recentAbsences.length === 0}
+        >
+          {data.recentAbsences.map((absence) => (
+            <WidgetRow
+              key={absence.id}
+              title={absence.status === "ABSENT" ? "Absence" : "Retard"}
+              meta={formatDate(absence.date)}
+              badge={<Pill tone="bad">Non justifiee</Pill>}
+            />
+          ))}
+        </Widget>
+      </div>
+    );
+  }
 
   if (role === "DIRECTOR" || role === "PROMOTER" || role === "DEPUTY_DIRECTOR") {
     if (!session!.user.schoolId) {
@@ -130,7 +209,6 @@ export default async function AccueilPage() {
           <h1 className="text-xl font-semibold text-foreground mb-2">
             {child.firstName} {child.lastName}
           </h1>
-          
           <a href={`/bulletin/${child.studentId}`}
             className="inline-block text-xs font-bold text-terracotta-700 mb-4"
           >
