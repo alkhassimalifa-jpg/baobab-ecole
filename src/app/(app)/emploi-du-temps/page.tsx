@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db/client";
 import { getClassSchedule, getParentChildrenClasses, getTeacherSchedule } from "@/lib/data/schedule";
 import { ScheduleGrid } from "@/components/schedule/schedule-grid";
 
@@ -13,6 +14,32 @@ export default async function EmploiDuTempsPage() {
         <p className="text-xs font-bold uppercase tracking-wide text-bark-700 mb-1">
           Mon planning
         </p>
+        <h1 className="text-xl font-semibold text-foreground mb-4">Emploi du temps</h1>
+        {slots.length === 0 ? (
+          <p className="text-sm text-foreground-muted">Aucun creneau planifie.</p>
+        ) : (
+          <ScheduleGrid slots={slots} />
+        )}
+      </div>
+    );
+  }
+
+  if (role === "STUDENT") {
+    const currentUser = await prisma.user.findUnique({ where: { id: session!.user.id } });
+    if (!currentUser?.loginId) {
+      return <div className="px-4 py-6"><p className="text-sm text-foreground-muted">Compte introuvable.</p></div>;
+    }
+    const student = await prisma.student.findFirst({
+      where: { matricule: currentUser.loginId },
+      include: { enrollments: { where: { academicYear: { isCurrent: true } }, take: 1 } },
+    });
+    const classId = student?.enrollments[0]?.classId;
+    if (!classId) {
+      return <div className="px-4 py-6"><p className="text-sm text-foreground-muted">Aucune classe active.</p></div>;
+    }
+    const slots = await getClassSchedule(classId);
+    return (
+      <div className="px-4 py-6">
         <h1 className="text-xl font-semibold text-foreground mb-4">Emploi du temps</h1>
         {slots.length === 0 ? (
           <p className="text-sm text-foreground-muted">Aucun creneau planifie.</p>

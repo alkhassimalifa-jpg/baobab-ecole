@@ -6,6 +6,14 @@ export default async function BulletinRedirectPage() {
   const session = await auth();
   const role = session?.user.role;
 
+  if (role === "STUDENT") {
+    const currentUser = await prisma.user.findUnique({ where: { id: session!.user.id } });
+    if (currentUser?.loginId) {
+      const student = await prisma.student.findFirst({ where: { matricule: currentUser.loginId } });
+      if (student) redirect(`/bulletin/${student.id}`);
+    }
+  }
+
   if (role === "PARENT") {
     const guardians = await prisma.guardian.findMany({
       where: { userId: session!.user.id },
@@ -25,9 +33,7 @@ export default async function BulletinRedirectPage() {
           <h1 className="text-xl font-semibold text-foreground mb-4">Choisir un bulletin</h1>
           <div className="space-y-2">
             {guardians.map((g) => (
-              
-                key={g.studentId}
-                href={`/bulletin/${g.studentId}`}
+              <a href={`/bulletin/${g.studentId}`} key={g.studentId}
                 className="block bg-surface border border-border rounded-md px-3 py-2.5 hover:border-bark-500 transition-colors"
               >
                 <span className="text-sm font-semibold text-foreground">

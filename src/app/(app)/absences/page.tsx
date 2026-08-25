@@ -23,12 +23,20 @@ export default async function AbsencesPage() {
     studentIds = guardians.map((g) => g.studentId);
   }
 
+  if (role === "STUDENT") {
+    const currentUser = await prisma.user.findUnique({ where: { id: session!.user.id } });
+    if (currentUser?.loginId) {
+      const student = await prisma.student.findFirst({ where: { matricule: currentUser.loginId } });
+      if (student) studentIds = [student.id];
+    }
+  }
+
   if (studentIds.length === 0) {
     return (
       <div className="px-4 py-6">
         <p className="text-sm text-foreground-muted">
-          {role === "PARENT"
-            ? "Aucun enfant rattache a ce compte."
+          {role === "PARENT" || role === "STUDENT"
+            ? "Aucun eleve rattache a ce compte."
             : "Consultez les absences d'un eleve via la liste des eleves."}
         </p>
       </div>
@@ -48,9 +56,11 @@ export default async function AbsencesPage() {
           <p className="text-xs font-bold uppercase tracking-wide text-bark-700 mb-1">
             {student.className} - {student.academicYearLabel}
           </p>
-          <h2 className="text-base font-semibold text-foreground mb-3">
-            {student.firstName} {student.lastName}
-          </h2>
+          {role === "PARENT" ? (
+            <h2 className="text-base font-semibold text-foreground mb-3">
+              {student.firstName} {student.lastName}
+            </h2>
+          ) : null}
 
           <Widget title={`Historique (${student.attendances.length})`} variant="absences" isEmpty={student.attendances.length === 0}>
             {student.attendances.map((a) => (

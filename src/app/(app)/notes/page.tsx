@@ -7,8 +7,6 @@ function formatDate(date: Date) {
   return new Intl.DateTimeFormat("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }).format(date);
 }
 
-const ALLOWED_STAFF = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR", "PEDAGOGICAL_HEAD", "SECRETARY", "TEACHER"];
-
 export default async function NotesPage() {
   const session = await auth();
   const role = session?.user.role;
@@ -25,12 +23,20 @@ export default async function NotesPage() {
     studentIds = guardians.map((g) => g.studentId);
   }
 
+  if (role === "STUDENT") {
+    const currentUser = await prisma.user.findUnique({ where: { id: session!.user.id } });
+    if (currentUser?.loginId) {
+      const student = await prisma.student.findFirst({ where: { matricule: currentUser.loginId } });
+      if (student) studentIds = [student.id];
+    }
+  }
+
   if (studentIds.length === 0) {
     return (
       <div className="px-4 py-6">
         <p className="text-sm text-foreground-muted">
-          {role === "PARENT"
-            ? "Aucun enfant rattache a ce compte."
+          {role === "PARENT" || role === "STUDENT"
+            ? "Aucun eleve rattache a ce compte."
             : "Consultez les notes d'un eleve via la liste des eleves."}
         </p>
       </div>
@@ -50,9 +56,11 @@ export default async function NotesPage() {
           <p className="text-xs font-bold uppercase tracking-wide text-bark-700 mb-1">
             {student.className} - {student.academicYearLabel}
           </p>
-          <h2 className="text-base font-semibold text-foreground mb-3">
-            {student.firstName} {student.lastName}
-          </h2>
+          {role === "PARENT" ? (
+            <h2 className="text-base font-semibold text-foreground mb-3">
+              {student.firstName} {student.lastName}
+            </h2>
+          ) : null}
 
           <Widget title={`Toutes les notes (${student.grades.length})`} variant="notes" isEmpty={student.grades.length === 0}>
             {student.grades.map((grade) => {

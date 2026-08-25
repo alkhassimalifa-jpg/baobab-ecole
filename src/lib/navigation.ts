@@ -66,6 +66,15 @@ export function getNavItemsForRole(role: string): NavItem[] {
     );
   }
 
+  if (role === "STUDENT") {
+    items.push(
+      { href: "/emploi-du-temps", label: "Emploi du temps" },
+      { href: "/notes", label: "Notes" },
+      { href: "/absences", label: "Absences" },
+      { href: "/bulletin", label: "Bulletin" }
+    );
+  }
+
   if (role === "SUPER_ADMIN") {
     items.push(
       { href: "/ecoles", label: "Ecoles" },

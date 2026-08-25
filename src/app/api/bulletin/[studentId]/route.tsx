@@ -25,12 +25,19 @@ export async function GET(
     return NextResponse.json({ error: "Acces refuse" }, { status: 403 });
   }
 
-  // Verification stricte : un parent ne peut telecharger que le bulletin de son propre enfant
   if (role === "PARENT") {
     const guardianLink = await prisma.guardian.findFirst({
       where: { userId: session.user.id, studentId },
     });
     if (!guardianLink) {
+      return NextResponse.json({ error: "Acces refuse" }, { status: 403 });
+    }
+  } else if (role === "STUDENT") {
+    const currentUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+    const student = currentUser?.loginId
+      ? await prisma.student.findFirst({ where: { matricule: currentUser.loginId } })
+      : null;
+    if (!student || student.id !== studentId) {
       return NextResponse.json({ error: "Acces refuse" }, { status: 403 });
     }
   } else if (!MANAGEMENT_ROLES.includes(role)) {

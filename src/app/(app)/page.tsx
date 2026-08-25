@@ -18,10 +18,6 @@ export default async function AccueilPage() {
   const role = session?.user.role;
 
   if (role === "STUDENT") {
-    const loginId = session!.user.email?.startsWith("eleve-")
-      ? null
-      : null;
-
     // On recupere le loginId (matricule) depuis la base, car la session ne le contient pas directement
     const { prisma } = await import("@/lib/db/client");
     const currentUser = await prisma.user.findUnique({ where: { id: session!.user.id } });

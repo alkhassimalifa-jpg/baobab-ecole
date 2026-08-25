@@ -25,6 +25,12 @@ export default async function BulletinPreviewPage({
       where: { userId: session!.user.id, studentId },
     });
     if (!link) notFound();
+  } else if (role === "STUDENT") {
+    const currentUser = await prisma.user.findUnique({ where: { id: session!.user.id } });
+    const student = currentUser?.loginId
+      ? await prisma.student.findFirst({ where: { matricule: currentUser.loginId } })
+      : null;
+    if (!student || student.id !== studentId) notFound();
   } else if (!MANAGEMENT_ROLES.includes(role)) {
     notFound();
   }
@@ -47,7 +53,7 @@ export default async function BulletinPreviewPage({
           </div>
           <div>
             <p className="text-sm font-semibold text-foreground">{data.studentName}</p>
-            <p className="text-xs text-foreground-muted">{data.matricule} — {data.className}</p>
+            <p className="text-xs text-foreground-muted">{data.matricule} - {data.className}</p>
           </div>
         </div>
         <p className="text-xs text-foreground-muted">{data.schoolName}</p>
@@ -55,7 +61,7 @@ export default async function BulletinPreviewPage({
 
       <div className="bg-bark-100 rounded-md p-4 mb-4 text-center">
         <p className="font-display text-3xl font-semibold text-bark-700">
-          {data.overallAverage !== null ? data.overallAverage.toFixed(2) : "—"}
+          {data.overallAverage !== null ? data.overallAverage.toFixed(2) : "-"}
         </p>
         <p className="text-xs text-foreground-muted uppercase tracking-wide mt-1">
           Moyenne generale / 20
