@@ -6,10 +6,11 @@ import { authConfig } from "@/lib/auth/config";
 const { auth } = NextAuth(authConfig);
 
 const PUBLIC_ROUTES = ["/connexion"];
+const isPublicSchoolLogin = (pathname: string) => /^\/ecole\/[^/]+\/connexion$/.test(pathname);
 
 export default auth((req: NextRequest & { auth: any }) => {
   const { pathname } = req.nextUrl;
-  const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
+  const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || isPublicSchoolLogin(pathname);
   const isLoggedIn = !!req.auth;
 
   if (isPublicRoute) {

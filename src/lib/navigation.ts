@@ -23,6 +23,7 @@ export function getNavItemsForRole(role: string): NavItem[] {
       { href: "/enseignants/nouveau", label: "Ajouter un enseignant" },
       { href: "/comptabilite", label: "Comptabilite" },
       { href: "/frais-impayes", label: "Frais impayes" },
+      { href: "/parametres/ecole", label: "Parametres de l ecole" },
       { href: "/parametres/bulletin", label: "Parametres bulletin" }
     );
   }
