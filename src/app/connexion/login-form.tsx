@@ -14,14 +14,14 @@ export function LoginForm() {
   return (
     <form action={formAction} className="space-y-5" noValidate>
       <div>
-        <Label htmlFor="email">Adresse email</Label>
+        <Label htmlFor="email">Email ou matricule</Label>
         <Input
           id="email"
           name="email"
-          type="email"
-          autoComplete="email"
+          type="text"
+          autoComplete="username"
           required
-          placeholder="vous@ecole.td"
+          placeholder="vous@ecole.td ou votre matricule"
         />
       </div>
 

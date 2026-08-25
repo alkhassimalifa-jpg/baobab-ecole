@@ -29,6 +29,7 @@ export type CreateStudentState = {
   error?: string;
   success?: boolean;
   matricule?: string;
+  studentTemporaryPassword?: string;
   parentTemporaryPassword?: string;
   parentEmail?: string;
   parentAlreadyExisted?: boolean;
@@ -82,6 +83,7 @@ export async function createStudentAction(
 
   let parentTemporaryPassword: string | undefined;
   let parentAlreadyExisted = false;
+  let studentTemporaryPassword: string | undefined;
 
   try {
     const result = await prisma.$transaction(async (tx) => {
@@ -141,6 +143,21 @@ export async function createStudentAction(
         },
       });
 
+      // Compte de connexion pour l'eleve lui-meme, avec le matricule comme identifiant
+      studentTemporaryPassword = generateTemporaryPassword();
+      const studentPasswordHash = await bcrypt.hash(studentTemporaryPassword, 12);
+      await tx.user.create({
+        data: {
+          email: `eleve-${matricule.toLowerCase()}@baobab-ecole.local`,
+          loginId: matricule,
+          passwordHash: studentPasswordHash,
+          role: "STUDENT",
+          schoolId,
+          firstName: data.firstName,
+          lastName: data.lastName,
+        },
+      });
+
       await tx.auditLog.create({
         data: {
           action: "STUDENT_ENROLLED",
@@ -158,6 +175,7 @@ export async function createStudentAction(
     return {
       success: true,
       matricule: result.matricule,
+      studentTemporaryPassword,
       parentTemporaryPassword,
       parentEmail: data.parentEmail,
       parentAlreadyExisted,

@@ -9,19 +9,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Identifiant", type: "text" },
         password: { label: "Mot de passe", type: "password" },
       },
       authorize: async (credentials) => {
-        const email = credentials?.email as string | undefined;
+        const identifier = credentials?.email as string | undefined;
         const password = credentials?.password as string | undefined;
 
-        if (!email || !password) {
+        if (!identifier || !password) {
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: email.toLowerCase().trim() },
+        const normalized = identifier.toLowerCase().trim();
+
+        // On essaie d'abord par email (staff/parents), puis par identifiant de connexion (eleves)
+        const user = await prisma.user.findFirst({
+          where: {
+            OR: [{ email: normalized }, { loginId: identifier.trim() }],
+          },
         });
 
         if (!user || !user.isActive) {

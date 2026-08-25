@@ -23,6 +23,22 @@ export function NewStudentForm({ classes }: NewStudentFormProps) {
           <p className="text-xs text-foreground-muted">Matricule genere : {state.matricule}</p>
         </div>
 
+        <div className="bg-surface border border-border rounded-md p-4 space-y-3 mb-4">
+          <p className="text-xs font-bold text-bark-700 uppercase tracking-wide">
+            Acces de l&apos;eleve
+          </p>
+          <div>
+            <p className="text-xs text-foreground-muted mb-0.5">Identifiant de connexion</p>
+            <p className="text-sm font-semibold text-foreground">{state.matricule}</p>
+          </div>
+          <div>
+            <p className="text-xs text-foreground-muted mb-0.5">Mot de passe temporaire</p>
+            <p className="text-lg font-mono font-bold text-bark-700 tracking-wide">
+              {state.studentTemporaryPassword}
+            </p>
+          </div>
+        </div>
+
         {state.parentAlreadyExisted ? (
           <div className="bg-info-bg border border-info rounded-md p-4">
             <p className="text-sm text-foreground">
@@ -31,8 +47,8 @@ export function NewStudentForm({ classes }: NewStudentFormProps) {
           </div>
         ) : (
           <div className="bg-surface border border-border rounded-md p-4 space-y-3">
-            <p className="text-xs text-foreground-muted">
-              Nouveau compte parent cree. Transmettez ces identifiants :
+            <p className="text-xs font-bold text-bark-700 uppercase tracking-wide">
+              Acces du parent
             </p>
             <div>
               <p className="text-xs text-foreground-muted mb-0.5">Email</p>
