@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db/client";
 import { generateTemporaryPassword } from "@/lib/auth/generate-password";
 
-const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR"];
+const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER"];
 
 const CREATABLE_ROLES = [
   "DEPUTY_DIRECTOR",

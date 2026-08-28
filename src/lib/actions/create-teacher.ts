@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db/client";
 import { generateTemporaryPassword } from "@/lib/auth/generate-password";
 
-const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR", "PEDAGOGICAL_HEAD"];
+const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR"];
 
 const schema = z.object({
   firstName: z.string().min(2, "Prenom trop court"),

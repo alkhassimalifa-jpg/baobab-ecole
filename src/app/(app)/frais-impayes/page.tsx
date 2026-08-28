@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { getSchoolUnpaidSummary } from "@/lib/data/unpaid-fees";
 
-const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR", "ACCOUNTANT", "SECRETARY"];
+const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "ACCOUNTANT", "SECRETARY"];
 
 function formatAmount(amount: number) {
   return new Intl.NumberFormat("fr-FR").format(amount) + " FCFA";

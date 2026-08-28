@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db/client";
 import { StaffRow } from "./staff-row";
 
-const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR"];
+const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER"];
 const STAFF_ROLES = ["DEPUTY_DIRECTOR", "PEDAGOGICAL_HEAD", "SECRETARY", "ACCOUNTANT", "SURVEILLANT"];
 
 export default async function PersonnelPage() {

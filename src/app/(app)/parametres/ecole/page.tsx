@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db/client";
 import { SchoolSettingsForm } from "./school-settings-form";
 
-const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR"];
+const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER"];
 
 export default async function SchoolSettingsPage() {
   const session = await auth();

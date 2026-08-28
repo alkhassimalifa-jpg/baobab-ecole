@@ -4,7 +4,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db/client";
 
-const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR"];
+const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER"];
 
 const schema = z.object({
   name: z.string().min(3, "Nom trop court"),

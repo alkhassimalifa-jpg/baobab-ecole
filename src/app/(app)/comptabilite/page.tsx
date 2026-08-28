@@ -4,7 +4,7 @@ import { FeeTypeForm } from "./fee-type-form";
 import { PaymentForm } from "./payment-form";
 import { Pill } from "@/components/dashboard/widget";
 
-const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR", "ACCOUNTANT", "SECRETARY"];
+const ALLOWED_ROLES = ["DIRECTOR", "PROMOTER", "ACCOUNTANT", "SECRETARY"];
 
 function formatAmount(amount: number) {
   return new Intl.NumberFormat("fr-FR").format(amount) + " FCFA";

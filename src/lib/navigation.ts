@@ -3,7 +3,7 @@ export type NavItem = {
   label: string;
 };
 
-const MANAGEMENT_ROLES = ["DIRECTOR", "PROMOTER", "DEPUTY_DIRECTOR", "PEDAGOGICAL_HEAD"];
+const FULL_MANAGEMENT = ["DIRECTOR", "PROMOTER"];
 
 export function getNavItemsForRole(role: string): NavItem[] {
   const items: NavItem[] = [
@@ -11,20 +11,42 @@ export function getNavItemsForRole(role: string): NavItem[] {
     { href: "/profil", label: "Mon profil" },
   ];
 
-  if (MANAGEMENT_ROLES.includes(role)) {
+  if (FULL_MANAGEMENT.includes(role)) {
     items.push(
       { href: "/eleves", label: "Eleves" },
       { href: "/eleves/nouveau", label: "Inscrire un eleve" },
       { href: "/structure", label: "Classes et matieres" },
+      { href: "/enseignants", label: "Enseignants" },
+      { href: "/enseignants/nouveau", label: "Ajouter un enseignant" },
       { href: "/personnel", label: "Personnel" },
       { href: "/affectations", label: "Affectations" },
       { href: "/presences", label: "Presences" },
       { href: "/emploi-du-temps/gestion", label: "Gerer emploi du temps" },
-      { href: "/enseignants", label: "Enseignants" },
-      { href: "/enseignants/nouveau", label: "Ajouter un enseignant" },
       { href: "/comptabilite", label: "Comptabilite" },
       { href: "/frais-impayes", label: "Frais impayes" },
       { href: "/parametres/ecole", label: "Parametres de l ecole" },
+      { href: "/parametres/bulletin", label: "Parametres bulletin" }
+    );
+  }
+
+  if (role === "DEPUTY_DIRECTOR") {
+    items.push(
+      { href: "/eleves", label: "Eleves" },
+      { href: "/structure", label: "Classes et matieres" },
+      { href: "/enseignants", label: "Enseignants" },
+      { href: "/affectations", label: "Affectations" },
+      { href: "/presences", label: "Presences" },
+      { href: "/emploi-du-temps/gestion", label: "Gerer emploi du temps" }
+    );
+  }
+
+  if (role === "PEDAGOGICAL_HEAD") {
+    items.push(
+      { href: "/eleves", label: "Eleves" },
+      { href: "/structure", label: "Classes et matieres" },
+      { href: "/enseignants", label: "Enseignants" },
+      { href: "/affectations", label: "Affectations" },
+      { href: "/emploi-du-temps/gestion", label: "Gerer emploi du temps" },
       { href: "/parametres/bulletin", label: "Parametres bulletin" }
     );
   }
@@ -56,6 +78,15 @@ export function getNavItemsForRole(role: string): NavItem[] {
     );
   }
 
+  if (role === "STUDENT") {
+    items.push(
+      { href: "/emploi-du-temps", label: "Emploi du temps" },
+      { href: "/notes", label: "Notes" },
+      { href: "/absences", label: "Absences" },
+      { href: "/bulletin", label: "Bulletin" }
+    );
+  }
+
   if (role === "SURVEILLANT") {
     items.push({ href: "/presences", label: "Presences" });
   }
@@ -64,15 +95,6 @@ export function getNavItemsForRole(role: string): NavItem[] {
     items.push(
       { href: "/comptabilite", label: "Comptabilite" },
       { href: "/frais-impayes", label: "Frais impayes" }
-    );
-  }
-
-  if (role === "STUDENT") {
-    items.push(
-      { href: "/emploi-du-temps", label: "Emploi du temps" },
-      { href: "/notes", label: "Notes" },
-      { href: "/absences", label: "Absences" },
-      { href: "/bulletin", label: "Bulletin" }
     );
   }
 
