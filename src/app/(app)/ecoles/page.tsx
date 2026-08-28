@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { getAllSchools } from "@/lib/data/schools";
 import { Button } from "@/components/ui/button";
-import { Pill } from "@/components/dashboard/widget";
+import { SchoolRow } from "./school-row";
 
 export default async function EcolesPage() {
   const session = await auth();
@@ -32,17 +32,14 @@ export default async function EcolesPage() {
       ) : (
         <div className="space-y-2">
           {schools.map((s) => (
-            <div key={s.id} className="bg-surface border border-border rounded-md px-3 py-2.5">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-foreground">{s.name}</span>
-                <Pill tone={s.subscriptionStatus === "ACTIVE" ? "good" : "neutral"}>
-                  {s.subscriptionStatus}
-                </Pill>
-              </div>
-              <p className="text-xs text-foreground-muted mt-0.5">
-                {s.city ?? "Ville non renseignee"} - {s.studentCount} eleve{s.studentCount > 1 ? "s" : ""}
-              </p>
-            </div>
+            <SchoolRow
+              key={s.id}
+              id={s.id}
+              name={s.name}
+              city={s.city}
+              studentCount={s.studentCount}
+              subscriptionStatus={s.subscriptionStatus}
+            />
           ))}
         </div>
       )}

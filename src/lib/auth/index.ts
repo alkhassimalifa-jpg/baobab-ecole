@@ -22,14 +22,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const normalized = identifier.toLowerCase().trim();
 
-        // On essaie d'abord par email (staff/parents), puis par identifiant de connexion (eleves)
         const user = await prisma.user.findFirst({
           where: {
             OR: [{ email: normalized }, { loginId: identifier.trim() }],
           },
+          include: { school: true },
         });
 
         if (!user || !user.isActive) {
+          return null;
+        }
+
+        // Si l'utilisateur appartient a une ecole suspendue, la connexion est refusee
+        if (user.school && user.school.subscriptionStatus === "SUSPENDED") {
           return null;
         }
 

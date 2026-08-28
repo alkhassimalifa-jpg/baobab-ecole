@@ -19,6 +19,7 @@ export function getNavItemsForRole(role: string): NavItem[] {
       { href: "/personnel", label: "Personnel" },
       { href: "/affectations", label: "Affectations" },
       { href: "/presences", label: "Presences" },
+      { href: "/emploi-du-temps/gestion", label: "Gerer emploi du temps" },
       { href: "/enseignants", label: "Enseignants" },
       { href: "/enseignants/nouveau", label: "Ajouter un enseignant" },
       { href: "/comptabilite", label: "Comptabilite" },

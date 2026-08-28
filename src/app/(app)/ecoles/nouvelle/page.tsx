@@ -103,6 +103,16 @@ export default function NouvelleEcolePage() {
           </h2>
           <div className="space-y-3">
             <div>
+              <Label htmlFor="directorTitle">Titre</Label>
+              <select
+                id="directorTitle"
+                name="directorTitle"
+                className="w-full rounded-md border border-border bg-surface px-3.5 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bark-700 mb-3"
+              >
+                <option value="Directeur">Directeur (college/primaire)</option>
+                <option value="Proviseur">Proviseur (lycee)</option>
+                <option value="Promoteur">Promoteur</option>
+              </select>
               <Label htmlFor="directorFirstName">Prenom</Label>
               <Input id="directorFirstName" name="directorFirstName" required />
             </div>
