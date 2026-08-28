@@ -2,9 +2,11 @@
 
 Plateforme SaaS de gestion scolaire multi-etablissements, concue pour les ecoles privees tchadiennes (prescolaire au lycee).
 
-Developpee par TECHNOVA.
+Developpee par Alkhassim Ali.
 
-**Auteur / Developpeur** : Alkhassim Ali Allafi — Developpeur Fullstack
+**Auteur / Developpeur** : Alkhassim Ali - Developpeur Fullstack
+**GitHub** : https://github.com/alkhassimalifa-jpg
+**Email** : alkhassimalifa@gmail.com
 
 ## Stack technique
 
@@ -18,11 +20,9 @@ Developpee par TECHNOVA.
 
 ## Demarrage
 
-`
-`ash
+```bash
 npm install
-`
-`
+```
 
 Creer un fichier `.env` a la racine (voir `.env.example`) avec :
 - `DATABASE_URL` : connexion PostgreSQL (Neon recommande)
@@ -30,14 +30,12 @@ Creer un fichier `.env` a la racine (voir `.env.example`) avec :
 
 Puis :
 
-`
-`ash
+```bash
 npx prisma generate
 npx prisma migrate dev
 npx tsx prisma/seed.ts
 npm run dev
-`
-`
+```
 
 L'application tourne sur http://localhost:3000
 
@@ -54,7 +52,7 @@ Mot de passe pour tous : `ChangeMoi123!`
 
 ## Roles geres
 
-Super Administrateur, Directeur/Promoteur, Directeur adjoint, Responsable pedagogique, Secretaire, Comptable, Surveillant, Enseignant, Parent, Eleve â€” avec permissions distinctes basees sur la hierarchie scolaire tchadienne (Proviseur/Directeur, Censeur, Directeur des etudes, Surveillant General).
+Super Administrateur, Directeur/Promoteur, Directeur adjoint, Responsable pedagogique, Secretaire, Comptable, Surveillant, Enseignant, Parent, Eleve - avec permissions distinctes basees sur la hierarchie scolaire tchadienne (Proviseur/Directeur, Censeur, Directeur des etudes, Surveillant General).
 
 ## Fonctionnalites principales
 
@@ -68,28 +66,28 @@ Super Administrateur, Directeur/Promoteur, Directeur adjoint, Responsable pedago
 - Bulletins scolaires (apercu web + export PDF, personnalisables par ecole)
 - Connexion par URL propre a chaque ecole (`/ecole/[slug]/connexion`)
 
-## Etat du projet â€” ce qui reste a faire avant une mise en ligne reelle
+## Etat du projet - ce qui reste a faire avant une mise en ligne reelle
 
-Ce projet est fonctionnel en developpement mais n'a **jamais ete deploye en production**. Avant un lancement reel :
+Ce projet est fonctionnel en developpement mais n'a jamais ete deploye en production. Avant un lancement reel :
 
 **Securite**
-- [ ] Brancher le rate limiting (librairie deja installee, jamais activee sur la connexion)
-- [ ] Authentification a deux facteurs (MFA) pour les comptes admin
-- [ ] Envoi d'email reel pour les mots de passe temporaires (actuellement affiches a l'ecran uniquement)
+- Brancher le rate limiting (librairie deja installee, jamais activee sur la connexion)
+- Authentification a deux facteurs (MFA) pour les comptes admin
+- Envoi d'email reel pour les mots de passe temporaires (actuellement affiches a l'ecran uniquement)
 
 **Infrastructure**
-- [ ] Hebergement (Vercel recommande pour Next.js)
-- [ ] Nom de domaine
-- [ ] Plan Neon sans mise en veille automatique
-- [ ] Sauvegardes automatiques de la base
+- Hebergement (Vercel recommande pour Next.js)
+- Nom de domaine
+- Plan Neon sans mise en veille automatique
+- Sauvegardes automatiques de la base
 
 **Fonctionnalites**
-- [ ] Annonces / communication interne
-- [ ] Documents administratifs (certificats, attestations)
-- [ ] Examens nationaux (BEF/Bac)
-- [ ] Mode hors-ligne (PWA)
-- [ ] Export Excel/CSV
-- [ ] Gestion structuree des abonnements (Super Admin)
+- Annonces / communication interne
+- Documents administratifs (certificats, attestations)
+- Examens nationaux (BEF/Bac)
+- Mode hors-ligne (PWA)
+- Export Excel/CSV
+- Gestion structuree des abonnements (Super Admin)
 
 ## Notes de developpement
 
