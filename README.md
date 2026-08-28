@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BAOBAB ECOLE
 
-## Getting Started
+Plateforme SaaS de gestion scolaire multi-etablissements, concue pour les ecoles privees tchadiennes (prescolaire au lycee).
 
-First, run the development server:
+Developpee par TECHNOVA.
 
-```bash
+**Auteur / Developpeur** : Alkhassim Ali Allafi — Developpeur Fullstack
+
+## Stack technique
+
+- **Framework** : Next.js 16 (App Router, Webpack en developpement suite a un bug connu Turbopack/LightningCSS sur Windows)
+- **Langage** : TypeScript
+- **Style** : Tailwind CSS v4
+- **Base de donnees** : PostgreSQL (Neon), via Prisma ORM v7 avec driver adapter
+- **Authentification** : Auth.js v5 (email/matricule + mot de passe, sessions JWT)
+- **PDF** : @react-pdf/renderer (bulletins scolaires)
+- **Securite** : bcrypt (hashage mots de passe), journal d'audit, isolation stricte multi-tenant
+
+## Demarrage
+
+`
+`ash
+npm install
+`
+`
+
+Creer un fichier `.env` a la racine (voir `.env.example`) avec :
+- `DATABASE_URL` : connexion PostgreSQL (Neon recommande)
+- `AUTH_SECRET` : genere via `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`
+
+Puis :
+
+`
+`ash
+npx prisma generate
+npx prisma migrate dev
+npx tsx prisma/seed.ts
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+`
+`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+L'application tourne sur http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Comptes de test (crees par le seed)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Mot de passe pour tous : `ChangeMoi123!`
 
-## Learn More
+| Role | Identifiant |
+|---|---|
+| Super Admin | admin@baobab-ecole.td |
+| Directeur | directeur@college-saint-exupery.td |
+| Enseignant | prof.maths@college-saint-exupery.td |
+| Parent | parent.test@baobab-ecole.td |
 
-To learn more about Next.js, take a look at the following resources:
+## Roles geres
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Super Administrateur, Directeur/Promoteur, Directeur adjoint, Responsable pedagogique, Secretaire, Comptable, Surveillant, Enseignant, Parent, Eleve â€” avec permissions distinctes basees sur la hierarchie scolaire tchadienne (Proviseur/Directeur, Censeur, Directeur des etudes, Surveillant General).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Fonctionnalites principales
 
-## Deploy on Vercel
+- Onboarding d'ecole par le Super Admin (ecole + annee scolaire + compte Directeur)
+- Gestion du personnel avec titres de poste tchadiens
+- Inscription d'eleves (creation automatique des comptes eleve et parent)
+- Emploi du temps avec detection de conflits (enseignant, salle, classe)
+- Saisie de notes et calcul de moyennes ponderees par coefficient
+- Suivi des presences/absences
+- Gestion financiere (types de frais obligatoires/optionnels, paiements, suivi des impayes)
+- Bulletins scolaires (apercu web + export PDF, personnalisables par ecole)
+- Connexion par URL propre a chaque ecole (`/ecole/[slug]/connexion`)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Etat du projet â€” ce qui reste a faire avant une mise en ligne reelle
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Ce projet est fonctionnel en developpement mais n'a **jamais ete deploye en production**. Avant un lancement reel :
+
+**Securite**
+- [ ] Brancher le rate limiting (librairie deja installee, jamais activee sur la connexion)
+- [ ] Authentification a deux facteurs (MFA) pour les comptes admin
+- [ ] Envoi d'email reel pour les mots de passe temporaires (actuellement affiches a l'ecran uniquement)
+
+**Infrastructure**
+- [ ] Hebergement (Vercel recommande pour Next.js)
+- [ ] Nom de domaine
+- [ ] Plan Neon sans mise en veille automatique
+- [ ] Sauvegardes automatiques de la base
+
+**Fonctionnalites**
+- [ ] Annonces / communication interne
+- [ ] Documents administratifs (certificats, attestations)
+- [ ] Examens nationaux (BEF/Bac)
+- [ ] Mode hors-ligne (PWA)
+- [ ] Export Excel/CSV
+- [ ] Gestion structuree des abonnements (Super Admin)
+
+## Notes de developpement
+
+- Windows/PowerShell : privilegier `[System.IO.File]::WriteAllText` avec encodage UTF8 sans BOM pour eviter les problemes d'encodage
+- Les chemins contenant des crochets (`[...nextauth]`, `[slug]`) necessitent `-LiteralPath` dans les commandes PowerShell
+- Toujours placer `<a` sur la meme ligne que son premier attribut dans le JSX (bug recurrent observe avec PowerShell qui supprime la balise si elle est seule sur sa ligne)
